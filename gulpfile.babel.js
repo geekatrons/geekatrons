@@ -10,6 +10,12 @@ import sherpa   from 'style-sherpa';
 import yaml     from 'js-yaml';
 import fs       from 'fs';
 
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
+const sass = gulpSass(dartSass);
+
+
+
 // Load all Gulp plugins into one variable
 const $ = plugins();
 
@@ -26,7 +32,7 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel(pages, sass, javascript, images, copy), styleGuide));
+ gulp.series(clean, gulp.parallel(pages, sass_transform, javascript, images, copy), styleGuide));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -74,13 +80,12 @@ function styleGuide(done) {
 
 // Compile Sass into CSS
 // In production, the CSS is compressed
-function sass() {
+function sass_transform() {
   return gulp.src('src/assets/scss/app.scss')
-    .pipe($.sourcemaps.init())
-    .pipe($.sass({
+    // .pipe($.sourcemaps.init())
+    .pipe(sass({
       includePaths: PATHS.sass
-    })
-      .on('error', $.sass.logError))
+    }).on('error', sass.logError))
     .pipe($.autoprefixer({
       browsers: COMPATIBILITY
     }))
@@ -135,7 +140,7 @@ function watch() {
   gulp.watch(PATHS.assets, copy);
   gulp.watch('src/pages/**/*.html').on('all', gulp.series(pages, browser.reload));
   gulp.watch('src/{layouts,partials}/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
-  gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass, browser.reload));
+  gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass_transform, browser.reload));
   gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
   gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
