@@ -7,3 +7,4 @@ bower_components
 .idea
 docs/
 node_modules/
+bower_components/
