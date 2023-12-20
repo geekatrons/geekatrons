@@ -6,7 +6,7 @@ name: "Github pages"
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   #pull_request:
   #  branches: [ "master" ]
 
@@ -33,6 +33,12 @@ jobs:
           npm run build
           mv docs/ _site
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
